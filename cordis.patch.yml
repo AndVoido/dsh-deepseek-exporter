@@ -1,0 +1,4 @@
+# dsh plugin --profile web add ./node_modules/dsh-deepseek-exporter
+- insert:
+    - id: deepseek-exporter
+      name: "dsh-deepseek-exporter"
