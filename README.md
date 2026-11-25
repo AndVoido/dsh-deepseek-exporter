@@ -56,7 +56,7 @@ its other exported artifacts.
 
 ### Web (DSH web client)
 
-1. Open the DSH web client; the **Export to DeepSeek** entry is in the sidebar.
+1. Open the DSH web client; the **导出会话 → DeepSeek 格式** entry is in the sidebar.
 2. Check the sessions you want.
 3. Choose a delivery mode:
    - **Export and download** — the browser receives the ZIP directly; nothing
