@@ -50,8 +50,8 @@
     "v": 1,
     "minApp": "1.0.4",
     "title": {
-      "zh": "导出会话 → DeepSeek 格式",
-      "en": "Export Sessions to DeepSeek"
+      "zh": "导出 DeepSeek 会话",
+      "en": "Export DeepSeek Sessions"
     },
     "icon": "downloads",
     "capabilities": [
@@ -63,8 +63,8 @@
         {
           "id": "deepseek-export",
           "title": {
-            "zh": "导出会话 → DeepSeek 格式",
-            "en": "Export Sessions to DeepSeek"
+            "zh": "导出 DeepSeek 会话",
+            "en": "Export DeepSeek Sessions"
           },
           "icon": "downloads",
           "placement": [

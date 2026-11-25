@@ -1,7 +1,7 @@
 /**
  * dsh-deepseek-exporter — web client half.
  *
- * One sidebar panel ("导出会话 → DeepSeek 格式") that lists stored sessions, takes a
+ * One sidebar panel ("导出 DeepSeek 会话") that lists stored sessions, takes a
  * multi-selection across pages, and exports the picked ones as one DeepSeek
  * official-format v3 ZIP.
  *
@@ -20,8 +20,19 @@ window.__ModuleLoader__.load({
     const React = require('react')
     const h = React.createElement
 
+    // The 「更多」 menu row should look like the shell's own menu rows, so borrow
+    // the host primitives when this page exposes them and fall back to a plain
+    // button when it does not (the panel itself stays dependency-free).
+    let primitives = null
+    try {
+      primitives = require('@deepseek-ai/dsh-client-ui-primitives')
+    } catch (failure) {
+      primitives = null
+    }
+
     const API = '/deepseek-export/api'
     const PANEL_ID = 'deepseek-export'
+    const MENU_LABEL = '导出 DeepSeek 会话'
     const PAGE_SIZE = 8
     const MAX_SELECTED = 64
 
@@ -137,6 +148,53 @@ window.__ModuleLoader__.load({
         h('path', { key: 'arrow', d: 'M8 10l4 4 4-4' }),
         h('path', { key: 'box', d: 'M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2' }),
       ]))
+    }
+
+    // --------------------------------------------------------------- menu row
+
+    /**
+     * The 「更多」 menu entry. The sidebar hands every `sidebar.panellist.actions`
+     * row `{ entries, onOpen, onPinnedChange, onDismiss }`, but its `onOpen` only
+     * resolves ids that are present in `sidebar.panellist` — and this panel left
+     * that flat list on purpose. So the row carries its own `openPanel` (a
+     * `layout.selectPanel` call) and closes the menu afterwards.
+     */
+    function MenuRow(props) {
+      const onSelect = () => {
+        props?.openPanel?.()
+        props?.onDismiss?.()
+      }
+      const icon = h('span', {
+        style: { display: 'inline-flex', alignItems: 'center', justifyContent: 'center' },
+        'aria-hidden': 'true',
+      }, h(PanelIcon, { size: 16 }))
+
+      const MenuItemButton = primitives?.MenuItemButton
+      if (typeof MenuItemButton === 'function') {
+        return h(MenuItemButton, {
+          icon: renderMenuIcon(icon),
+          onSelect,
+        }, MENU_LABEL)
+      }
+
+      // Fallback for a page without the primitives seed: a plain menu row keeps
+      // the entry usable (the panel's own stylesheet is not injected out here).
+      return h('button', {
+        type: 'button', role: 'menuitem',
+        style: {
+          display: 'flex', alignItems: 'center', gap: '8px', width: '100%',
+          padding: '8px 10px', border: '0', borderRadius: '6px', background: 'transparent',
+          color: 'var(--dsw-alias-label-primary)', font: 'inherit', fontSize: '14px',
+          textAlign: 'left', cursor: 'pointer',
+        },
+        onClick: onSelect,
+      }, [icon, h('span', { key: 'label' }, MENU_LABEL)])
+    }
+
+    /** Prefer the shell's own download glyph; keep the plugin's tray icon as fallback. */
+    function renderMenuIcon(fallback) {
+      const Download = primitives?.IconDownloadOutlineRegular
+      return typeof Download === 'function' ? h(Download, { size: 16 }) : fallback
     }
 
     // ------------------------------------------------------------------ panel
@@ -363,7 +421,7 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'dse' }, [
         h('style', { key: 'css', dangerouslySetInnerHTML: { __html: CSS } }),
         h('div', { className: 'dse-head', key: 'head' }, [
-          h('span', { className: 'dse-title', key: 'title' }, '导出会话 → DeepSeek 格式'),
+          h('span', { className: 'dse-title', key: 'title' }, '导出 DeepSeek 会话'),
           h('span', { className: 'dse-count', key: 'count' },
             `${rows.length} 个会话${subagentCount > 0 ? `（${subagentCount} 个子代理）` : ''} · 已选 ${selected.length}`),
           h('span', { className: 'dse-sp', key: 'sp' }),
@@ -510,14 +568,21 @@ window.__ModuleLoader__.load({
     // --------------------------------------------------------------- register
 
     return {
-      inject: ['slots'],
+      inject: ['slots', 'layout'],
       apply(ctx) {
-        ctx.slots.inject('sidebar.panellist', () => ctx.slots.register({
-          name: 'sidebar.panellist',
+        // 「更多」 menu row: the flat sidebar row moved into the sidebar's More
+        // menu, so `sidebar.panellist` gets no entry of its own. `main` must stay
+        // registered — layout.selectPanel() refuses a panel with no main half.
+        const openPanel = () => {
+          ctx.layout.selectPanel(PANEL_ID)
+        }
+        ctx.slots.inject('sidebar.panellist.actions', () => ctx.slots.register({
+          name: 'sidebar.panellist.actions',
           id: PANEL_ID,
           order: 30,
-          label: '导出会话 → DeepSeek 格式',
-        }, PanelIcon))
+          label: MENU_LABEL,
+          inject: () => ({ openPanel }),
+        }, MenuRow))
         ctx.slots.inject('main', () => ctx.slots.register({
           name: 'main',
           key: PANEL_ID,
