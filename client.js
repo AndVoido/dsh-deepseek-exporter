@@ -57,7 +57,7 @@ window.__ModuleLoader__.load({
 
     function rowMeta(row) {
       const parts = []
-      // Subagent sessions are noise for a Export Sessions to DeepSeek; say so on the row.
+      // Subagent sessions are noise for a DeepSeek export; say so on the row.
       if (row.origin === 'subagent') parts.push('子代理')
       parts.push(row.messages === null || row.messages === undefined ? '消息数 —' : `${row.messages} 条消息`)
       parts.push(formatDate(row.updatedAt))
