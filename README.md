@@ -42,7 +42,7 @@ Changes under `client.js` (the web UI) also need a restart to take effect.
 
 ### Phone (dsh-go native panel)
 
-1. Open the **Features** page and pick **DeepSeek export** (导出会话 → DeepSeek 格式).
+1. Open the **Features** page and pick **Export Sessions to DeepSeek** (导出会话 → DeepSeek 格式).
 2. The session list appears with message counts. Use **Select page**,
    **Real chats only**, **Clear**, or check rows individually. Paging controls
    appear when there is more than one page.
