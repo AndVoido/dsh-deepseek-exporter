@@ -42,7 +42,7 @@ Changes under `client.js` (the web UI) also need a restart to take effect.
 
 ### Phone (dsh-go native panel)
 
-1. Open the **Features** page and pick **DeepSeek export** (导出到 DeepSeek 格式).
+1. Open the **Features** page and pick **DeepSeek export** (导出会话 → DeepSeek 格式).
 2. The session list appears with message counts. Use **Select page**,
    **Real chats only**, **Clear**, or check rows individually. Paging controls
    appear when there is more than one page.
@@ -182,7 +182,7 @@ DeepSeek 网页版或其它应用。
 ### 功能
 
 - **dsh-go 手机原生面板**：勾选会话 → 导出 → 直接写到手机存储
-- **Harness 网页端**：侧栏「导出到 DeepSeek」入口，可下载到浏览器或存到手机
+- **Harness 网页端**：侧栏「导出会话 → DeepSeek 格式」入口，可下载到浏览器或存到手机
 - **「只选真实对话」**：靠 `header.origin !== 'subagent'` 一键跳过子代理会话
 - **导出位置可选**：预设按钮（Download / DCIM / Documents）+ 手动输入，
   目录不存在时自动 `mkdir -p`
@@ -199,9 +199,9 @@ dsh plugin --profile web add /root/.dsh/dsh-go/plugins/dsh-deepseek-exporter
 
 ### 用法
 
-- 手机：打开 App 的「功能」页 → 「导出到 DeepSeek 格式」→ 勾选会话 →
+- 手机：打开 App 的「功能」页 → 「导出会话 → DeepSeek 格式」→ 勾选会话 →
   （可改目录）→ 导出。默认写到 `/sdcard/Download/DSH-Go`。
-- 网页端：侧栏「导出到 DeepSeek」→ 勾选 → 「导出并下载」或「保存到手机」。
+- 网页端：侧栏「导出会话 → DeepSeek 格式」→ 勾选 → 「导出并下载」或「保存到手机」。
   前者不写盘，后者写盘并返回路径。
 
 ### 输出结构
