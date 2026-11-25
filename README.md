@@ -1,5 +1,4 @@
-# dsh-deepseek-exporter
-
+# 导出会话 → DeepSeek 格式（dsh-deepseek-exporter）
 Export DSH sessions to DeepSeek's official v3 ZIP format.
 
 ## Why

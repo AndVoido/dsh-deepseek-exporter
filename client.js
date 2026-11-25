@@ -1,7 +1,7 @@
 /**
  * dsh-deepseek-exporter — web client half.
  *
- * One sidebar panel ("导出到 DeepSeek") that lists stored sessions, takes a
+ * One sidebar panel ("导出会话 → DeepSeek 格式") that lists stored sessions, takes a
  * multi-selection across pages, and exports the picked ones as one DeepSeek
  * official-format v3 ZIP.
  *
@@ -57,7 +57,7 @@ window.__ModuleLoader__.load({
 
     function rowMeta(row) {
       const parts = []
-      // Subagent sessions are noise for a DeepSeek export; say so on the row.
+      // Subagent sessions are noise for a Export Sessions to DeepSeek; say so on the row.
       if (row.origin === 'subagent') parts.push('子代理')
       parts.push(row.messages === null || row.messages === undefined ? '消息数 —' : `${row.messages} 条消息`)
       parts.push(formatDate(row.updatedAt))
@@ -363,7 +363,7 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'dse' }, [
         h('style', { key: 'css', dangerouslySetInnerHTML: { __html: CSS } }),
         h('div', { className: 'dse-head', key: 'head' }, [
-          h('span', { className: 'dse-title', key: 'title' }, '导出到 DeepSeek 格式'),
+          h('span', { className: 'dse-title', key: 'title' }, '导出会话 → DeepSeek 格式'),
           h('span', { className: 'dse-count', key: 'count' },
             `${rows.length} 个会话${subagentCount > 0 ? `（${subagentCount} 个子代理）` : ''} · 已选 ${selected.length}`),
           h('span', { className: 'dse-sp', key: 'sp' }),
@@ -516,7 +516,7 @@ window.__ModuleLoader__.load({
           name: 'sidebar.panellist',
           id: PANEL_ID,
           order: 30,
-          label: '导出到 DeepSeek',
+          label: '导出会话 → DeepSeek 格式',
         }, PanelIcon))
         ctx.slots.inject('main', () => ctx.slots.register({
           name: 'main',
