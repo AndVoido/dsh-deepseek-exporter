@@ -19,7 +19,7 @@ matches what DeepSeek's importer expects.
   browser or save it to the phone.
 - **"Real chats only"** — one tap to select only sessions a human started,
   skipping subagent sessions.
-- **Configurable export folder** — preset buttons (Download / DCIM / Documents)
+- **Configurable export folder** — one preset button (Download/DSH-Go)
   plus free-text entry; the folder is created with `mkdir -p` if missing.
 - **Path validation** — only `/sdcard/` is writable, `..` is refused, symlink
   escapes are refused.
@@ -184,7 +184,7 @@ DeepSeek 网页版或其它应用。
 - **dsh-go 手机原生面板**：勾选会话 → 导出 → 直接写到手机存储
 - **Harness 网页端**：侧栏「更多」菜单里的「导出 DeepSeek 会话」，可下载到浏览器或存到手机
 - **「只选真实对话」**：靠 `header.origin !== 'subagent'` 一键跳过子代理会话
-- **导出位置可选**：预设按钮（Download / DCIM / Documents）+ 手动输入，
+- **导出位置可选**：预设按钮（Download/DSH-Go）+ 手动输入，
   目录不存在时自动 `mkdir -p`
 - **路径安全**：只允许 `/sdcard/` 下、拒绝 `..`、拒绝符号链接逃逸
 
