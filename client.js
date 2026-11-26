@@ -123,6 +123,11 @@ window.__ModuleLoader__.load({
 .dse-dest-title{font-weight:600}
 .dse-dest input[type=text]{width:100%;height:32px;padding:0 10px;border-radius:8px;border:1px solid var(--dsw-alias-border-l2);background:var(--dsw-alias-bg-base);color:var(--dsw-alias-label-primary);font:inherit;font-family:var(--dsw-font-mono,monospace);font-size:12px}
 .dse-dest input[type=text]:focus{outline:none;border-color:var(--dsw-alias-brand-primary)}
+.dse-filters{display:flex;flex-direction:column;gap:8px;margin:14px 0 0;padding:11px 12px;border-radius:10px;border:1px solid var(--dsw-alias-border-l2)}
+.dse-check{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px}
+.dse-check input[type=checkbox]{width:16px;height:16px;margin:0;accent-color:var(--dsw-alias-brand-primary);cursor:pointer;flex:0 0 auto}
+.dse-check input[type=checkbox]:disabled{cursor:not-allowed;opacity:.55}
+.dse-check .dse-hint{margin-left:auto;text-align:right}
 .dse-presets{display:flex;gap:6px;flex-wrap:wrap}
 .dse-chip{height:26px;padding:0 10px;border-radius:13px;border:1px solid var(--dsw-alias-border-l2);background:transparent;color:var(--dsw-alias-label-primary);font:inherit;font-size:12px;cursor:pointer;white-space:nowrap}
 .dse-chip:hover:not(:disabled){background:var(--dsw-alias-interactive-bg-hover)}
@@ -216,6 +221,10 @@ window.__ModuleLoader__.load({
       const [outDirMax, setOutDirMax] = React.useState(200)
       const [outDirNote, setOutDirNote] = React.useState(null)
       const [savingDir, setSavingDir] = React.useState(false)
+      // What to leave out of the archive. Component state, never stored: the
+      // panel opens with both off every time, so the default is a full export.
+      const [filterThink, setFilterThink] = React.useState(false)
+      const [filterTool, setFilterTool] = React.useState(false)
 
       const load = React.useCallback(async (force) => {
         setLoading(true)
@@ -371,9 +380,15 @@ window.__ModuleLoader__.load({
         try {
           // The folder rides along on the disk answer only: a browser download
           // never touches the phone's storage, so it needs no folder at all.
+          // The filters ride along on both: they change the archive's content,
+          // not where it goes.
           const payload = download
-            ? { sessionIds: selected }
-            : { sessionIds: selected, ...(outDir.trim() !== '' ? { outDir: outDir.trim() } : {}) }
+            ? { sessionIds: selected, filters: { think: filterThink, tool: filterTool } }
+            : {
+                sessionIds: selected,
+                filters: { think: filterThink, tool: filterTool },
+                ...(outDir.trim() !== '' ? { outDir: outDir.trim() } : {}),
+              }
           const response = await fetch(`${API}/export${download ? '?download=1' : ''}`, {
             method: 'POST',
             credentials: 'same-origin',
@@ -476,6 +491,37 @@ window.__ModuleLoader__.load({
           rows.length > 0
             ? h('div', { key: 'sep', className: 'dse-sep' })
             : null,
+          // What to export. Both start unchecked, and the state is never saved:
+          // the panel always opens ready to export everything.
+          h('div', { key: 'filters', className: 'dse-filters' }, [
+            h('div', { key: 'h', className: 'dse-dest-head' }, [
+              h('span', { key: 't', className: 'dse-dest-title' }, '导出内容'),
+            ]),
+            h('label', { key: 'think', className: 'dse-check' }, [
+              h('input', {
+                key: 'box', type: 'checkbox',
+                checked: filterThink,
+                disabled: busy,
+                onChange: () => { setFilterThink((on) => !on) },
+              }),
+              h('span', { key: 'txt' }, '过滤推理过程'),
+              h('span', { key: 'hint', className: 'dse-hint' }, '不导出 THINK 片段'),
+            ]),
+            h('label', { key: 'tool', className: 'dse-check' }, [
+              h('input', {
+                key: 'box', type: 'checkbox',
+                checked: filterTool,
+                disabled: busy,
+                onChange: () => { setFilterTool((on) => !on) },
+              }),
+              h('span', { key: 'txt' }, '过滤工具调用'),
+              h('span', { key: 'hint', className: 'dse-hint' }, '不导出 TOOL_SEARCH / TOOL_OPEN 以及 [tool] 文本'),
+            ]),
+            h('div', { key: 'note', className: 'dse-hint' },
+              filterThink || filterTool
+                ? `将跳过${[filterThink ? '推理过程' : null, filterTool ? '工具调用' : null].filter(Boolean).join('和')}。`
+                : '都没勾：导出全部内容。'),
+          ]),
           presets.length > 0 || outDir !== ''
             ? h('div', { key: 'dest', className: 'dse-dest' }, [
                 h('div', { key: 'h', className: 'dse-dest-head' }, [

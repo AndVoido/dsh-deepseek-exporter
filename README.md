@@ -21,6 +21,10 @@ matches what DeepSeek's importer expects.
   skipping subagent sessions.
 - **Configurable export folder** — one preset button (Download/DSH-Go)
   plus free-text entry; the folder is created with `mkdir -p` if missing.
+- **Content filters** — two checkboxes, both off by default: skip reasoning
+  (`THINK`) and skip tool calls (the official `TOOL_SEARCH` / `TOOL_OPEN`
+  fragments plus the `[tool] …` text they degrade to). The choice is not
+  remembered, so the panel always opens ready to export everything.
 - **Path validation** — only `/sdcard/` is writable, `..` is refused, symlink
   escapes are refused.
 - **Official DeepSeek v3 layout**, verified against a real DeepSeek export.
@@ -76,7 +80,7 @@ service is unavailable they answer `503` instead of letting the request through.
 | Route | Purpose |
 | --- | --- |
 | `GET /deepseek-export/api/sessions` | List sessions (id, title, message count, timestamps, origin). `?refresh=1` re-reads titles. |
-| `POST /deepseek-export/api/export` | `{"sessionIds": [...]}`, 1–64 ids. Without flags: write to disk and return JSON. With `?download=1` or `Accept: application/zip`: stream the ZIP, write nothing. |
+| `POST /deepseek-export/api/export` | `{"sessionIds": [...], "filters"?: {"think"?: bool, "tool"?: bool}}`, 1–64 ids. Without flags: write to disk and return JSON. With `?download=1` or `Accept: application/zip`: stream the ZIP, write nothing. `filters` is optional and each field defaults to `false` (export everything); a non-boolean field is refused with `400 invalid-filters`. |
 | `GET /deepseek-export/api/prefs` | Read the remembered output folder. |
 
 ## Output format
@@ -186,6 +190,9 @@ DeepSeek 网页版或其它应用。
 - **「只选真实对话」**：靠 `header.origin !== 'subagent'` 一键跳过子代理会话
 - **导出位置可选**：预设按钮（Download/DSH-Go）+ 手动输入，
   目录不存在时自动 `mkdir -p`
+- **内容过滤**：两个勾选框，默认都不勾 —— 「过滤推理过程」跳过 `THINK`
+  片段，「过滤工具调用」跳过 `TOOL_SEARCH` / `TOOL_OPEN` 以及它们降级成的
+  `[tool] …` 文本。选择不记忆，每次打开都是全导出
 - **路径安全**：只允许 `/sdcard/` 下、拒绝 `..`、拒绝符号链接逃逸
 
 ### 安装
