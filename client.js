@@ -407,6 +407,7 @@ window.__ModuleLoader__.load({
               sessions: body.sessions,
               dirWarning: typeof body.dirWarning === 'string' ? body.dirWarning : null,
               missing: Array.isArray(body.missingSessions) ? body.missingSessions.length : 0,
+              empty: Array.isArray(body.emptySessions) ? body.emptySessions.length : 0,
             })
           }
         } catch (failure) {
@@ -446,6 +447,9 @@ window.__ModuleLoader__.load({
                   : null,
                 result.missing > 0
                   ? h('div', { key: 'miss' }, `${result.missing} 个所选会话已不存在，已跳过`)
+                  : null,
+                result.empty > 0
+                  ? h('div', { key: 'empty' }, `${result.empty} 个所选会话没有任何消息，已跳过`)
                   : null,
               ])
             : null,
