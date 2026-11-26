@@ -1,7 +1,7 @@
 /**
  * dsh-deepseek-exporter — web client half.
  *
- * One sidebar panel ("导出 DeepSeek 会话") that lists stored sessions, takes a
+ * One sidebar panel ("会话导出") that lists stored sessions, takes a
  * multi-selection across pages, and exports the picked ones as one DeepSeek
  * official-format v3 ZIP.
  *
@@ -32,7 +32,7 @@ window.__ModuleLoader__.load({
 
     const API = '/deepseek-export/api'
     const PANEL_ID = 'deepseek-export'
-    const MENU_LABEL = '导出 DeepSeek 会话'
+    const MENU_LABEL = '会话导出'
     const PAGE_SIZE = 8
     const MAX_SELECTED = 64
 
@@ -422,7 +422,7 @@ window.__ModuleLoader__.load({
       return h('div', { className: 'dse' }, [
         h('style', { key: 'css', dangerouslySetInnerHTML: { __html: CSS } }),
         h('div', { className: 'dse-head', key: 'head' }, [
-          h('span', { className: 'dse-title', key: 'title' }, '导出 DeepSeek 会话'),
+          h('span', { className: 'dse-title', key: 'title' }, '会话导出'),
           h('span', { className: 'dse-count', key: 'count' },
             `${rows.length} 个会话${subagentCount > 0 ? `（${subagentCount} 个子代理）` : ''} · 已选 ${selected.length}`),
           h('span', { className: 'dse-sp', key: 'sp' }),
